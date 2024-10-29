@@ -1,47 +1,62 @@
-// 1. Створити функцію fetchCountreisByName яка буде отримувати назву країни і повертати розпарсені данні
-// 2. Створити функцію showNotification 
-// 3. Створити функцію createCountriesList яка буде отримувати масив країн і повертати список назв країн
-// 4. Створити функцію createCountryCard яка буде отримувати обєкт країни і повертати розмітку картки однієї країни
-import { alert, defaultModules } from '@pnotify/core';
+import fetchCountries from './fetchCountries'
+import debounce from 'lodash.debounce'
+import { error, defaultModules } from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
+
 import * as PNotifyMobile from '@pnotify/mobile';
- 
+import '@pnotify/mobile/dist/PNotifyMobile.css';
+
 defaultModules.set(PNotifyMobile, {});
- 
 
-const containerRef = document.querySelector('.container')
-const inputRef = document.querySelector('.input')
-const listRef = document.querySelector('.list')
+const searchQuery = document.querySelector('.search')
+const resultsContainer = document.querySelector('.country-info')
+const counryList = document.querySelector('.country-list')
 
-inputRef.addEventListener('input', onSearchInput)
 
-function onSearchInput(){
-    fetchCountriesByName(event.target.value)
+searchQuery.addEventListener('input', debounce((e) => {
+    resultsContainer.innerHTML = '';
+    counryList.innerHTML = '';
+    const query = e.target.value.trim();
+    if (!query) return;
+
+    fetchCountries(searchQuery.value).then(countries => {
+        if (countries.length === 1) {
+            createCounryCard(countries)
+        } else if(countries.length > 1 && countries.length <= 10){
+            createCounryList(countries)
+        }else if (countries.length > 10) {
+            createNotification('Too many matches found. Please enter a more specific query.');
+        }
+    }
+    ).catch(err => createNotification('Country not found.'));
+    e.target.value = ''
+}, 500))
+
+function createCounryList(countries) {
+    const listMarkup = countries.map(country => {
+        return `<li>${country.name.official}</li>`
+    }).join('')
+counryList.innerHTML = listMarkup
 }
 
-function fetchCountriesByName(name){
-    return fetch(`https://restcountries.com/v3.1/name/${name}`)
-    .then(response => response.json())
+function createCounryCard(country) {
+    const languages = country[0].languages;
+    const languageKeys = Object.keys(languages);
+    const language = languageKeys.map(lang => `<li>${languages[lang]}</li>`).join(' ')
+const cardMarkup = `<h1>${country[0].name.official}</h1>
+<p>Capital: ${country.capital}</p>
+<p>Population: ${country.population}</p>
+<ul>Languages: ${language}</ul>
+<img src="${country[0].flags.png}" alt="Flag of ${country[0].flags.alt}">
+`
+resultsContainer.innerHTML = cardMarkup
 }
 
-function showNotification(){
-    alert({
-        text: 'Notice me, senpai!'
-      });
-}
-
-function createCountriesList(countries){
-    return countries.map((country)=>{
-        return`
-        <li>
-        <p>${country.name.officia}</p>
-        </li>
-        `
+function createNotification(message) {
+    error({
+        text: 'message',
+            type: 'info',
+        delay: 500,
     })
 }
-
-function createCountryCard(country){
-    return `<h1></h1>
-        <p class="capital">capital:${country.capital}</p>
-        <p class="population">population: ${country.population}</p>
-        <ul class="languages">languages:${country.languages.map(lang =>`<li>${lang.name}</li>`).join(', ')}</ul>
-        <img src="${country.flag}>`}
