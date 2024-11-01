@@ -1,0 +1,11 @@
+.country-info {
+    margin-top: 20px;
+}
+.country-list {
+    list-style: none;
+    padding: 0;
+}
+
+.country-list li {
+    padding: 5px;
+}
