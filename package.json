@@ -1,26 +1,30 @@
 {
-  "name": "hm.country",
-  "version": "1.0.0",
+  "name": "nm.country",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "homepage": "https://github.com/MarkBrem/hm-country.git",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html"
+    "build": "parcel build src/*.html --public-url /parcel-project-template/"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goitacademy/parcel-project-template.git"
+  },
+  "keywords": [],
+  "author": "Alexander Repeta <alexander.repeta@gmail.com>",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/goitacademy/parcel-project-template/issues"
+  },
   "dependencies": {
-    "@pnotify/core": "^5.2.0",
-    "@pnotify/mobile": "^5.2.0",
-    "cors": "^2.8.5",
-    "lodash.debounce": "^4.0.8",
-    "parsel": "^0.3.0",
-    "pnotify": "^5.2.0"
+    "modern-normalize": "^1.1.0"
   },
   "devDependencies": {
-    "parcel": "^2.12.0",
-    "parcel-bundler": "^1.12.5",
-    "posthtml-include": "^2.0.1"
-  }
+    "@parcel/transformer-sass": "^2.6.0",
+    "parcel": "^2.6.0",
+    "parcel-reporter-clean-dist": "^1.0.4",
+    "posthtml-include": "^1.7.4"
+  },
+  "browserslist": "> 0.5%, last 2 versions, not dead"
 }
